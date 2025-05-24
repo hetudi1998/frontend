@@ -1,27 +1,30 @@
 import { useState } from "react";
 import servicebg from "../assets/service/servicebg.jpg";
 import ServiceCard from "./Card";
+import serviceimg1 from "../assets/service/serviceimg1.jpg";
+import serviceimg2 from "../assets/service/serviceimg2.jpg";
+import serviceimg3 from "../assets/service/serviceimg3.jpg";
 
 export default function ServicesSection() {
   const [, setHoveredCard] = useState<string | null>(null);
 
-  const services = [
-    {
-      id: "filmmaking",
-      title: "Filmmaking",
-      image: "/src/assets/service/serviceimg1.jpg",
-    },
-    {
-      id: "visual-effects",
-      title: "Visual Effects",
-      image: "/src/assets/service/serviceimg2.jpg",
-    },
-    {
-      id: "graphic-designing",
-      title: "Graphic Designing",
-      image: "/src/assets/service/serviceimg3.jpg",
-    },
-  ];
+const services = [
+  {
+    id: "filmmaking",
+    title: "Filmmaking",
+    image: serviceimg1,
+  },
+  {
+    id: "visual-effects",
+    title: "Visual Effects",
+    image: serviceimg2,
+  },
+  {
+    id: "graphic-designing",
+    title: "Graphic Designing",
+    image: serviceimg3,
+  },
+];
 
   return (
     <div className="bg-[#1C1C1D] min-h-[100vh] w-full relative overflow-hidden flex items-center py-20 rounded-[3rem]">
