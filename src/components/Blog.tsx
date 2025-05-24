@@ -3,8 +3,17 @@ import { ArrowUpRight } from "lucide-react";
 
 import { getAllPosts } from "./Api"; // Make sure the path to api.js is correct
 
+type BlogPost = {
+  id: string | number;
+  image: string;
+  title: string;
+  category: string;
+  author: string;
+  date: string;
+};
+
 export default function BlogPostSection() {
-  const [blogPosts, setBlogPosts] = useState([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true); // <-- Step 1
 
   useEffect(() => {
