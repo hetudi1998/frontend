@@ -10,6 +10,7 @@ type BlogPost = {
   category: string;
   author: string;
   date: string;
+  linkedin: string;
 };
 
 export default function BlogPostSection() {
@@ -56,7 +57,7 @@ export default function BlogPostSection() {
                     alt={post.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute bottom-0 right-3 bg-[#C7619C] rounded-full p-5 cursor-pointer hover:opacity-90 transition-opacity shadow-lg">
+                  <div className="absolute bottom-0 right-3 bg-[#C7619C] rounded-full p-5 cursor-pointer hover:opacity-90 transition-opacity shadow-lg" onClick={() => window.open(post.linkedin, '_blank')}>
                     <ArrowUpRight className="text-white" size={64} />
                   </div>
                 </div>
