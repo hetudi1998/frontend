@@ -6,6 +6,7 @@ import InstagramIcon from '../assets/footer/instagram.svg';
 import LinkedinIcon from '../assets/footer/linkedinwhite.svg';
 import YoutubeIcon from '../assets/footer/youtubewhite.svg';
 import Resume from '../assets/Hetansa_Resume.pdf';
+import { subscribeEmail } from './Api';
 
 const navigationItems = [
   { href: 'home', text: 'Home' },
@@ -24,11 +25,17 @@ const SOCIAL_LINKS = [
 export default function Footer() {
   const [email, setEmail] = useState('');
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle email submission
-    console.log('Email submitted:', email);
-    setEmail('');
+    try {
+      await subscribeEmail(email);
+      console.log("Subscription successful!");
+      //setMessage("Subscription successful!");
+      setEmail(""); // clear field after success
+    } catch (error) {
+      //setMessage("Subscription failed. Try again.");
+      console.error(error);
+    }
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {

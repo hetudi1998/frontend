@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Mail, Star, Award, Shield } from "lucide-react";
+import { subscribeEmail } from "./Api";
 
 export default function ContactFormWithTicker() {
   const [email, setEmail] = useState("");
   const [tickerPositionX, setTickerPositionX] = useState(0);
-
+  const [tickerPositionY, setTickerPositionY] = useState(0);
 
   // Ticker items
   const tickerItems = [
@@ -38,9 +39,18 @@ export default function ContactFormWithTicker() {
   }, []);
 
   // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     alert(`Email submitted: ${email}`);
-    setEmail("");
+    try {
+          await subscribeEmail(email);
+          console.log("Subscription successful!");
+          //setMessage("Subscription successful!");
+          setEmail(""); // clear field after success
+        } catch (error) {
+          //setMessage("Subscription failed. Try again.");
+          console.error(error);
+        }
+  
   };
 
   return (
