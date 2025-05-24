@@ -1,13 +1,22 @@
 import { ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import blogimg1 from "../assets/blog/blogpost1.jpg";
+import blogimg2 from "../assets/blog/blogpost2.jpg";
+import blogimg3 from "../assets/blog/blogpost3.jpg";
+import blogimg4 from "../assets/blog/blogpost4.jpg";
+import blogimg5 from "../assets/blog/blogpost5.jpg";
+import blogimg6 from "../assets/blog/blogpost6.jpg";
+import blogimg7 from "../assets/blog/blogpost7.jpg";
+import blogimg8 from "../assets/blog/blogpost8.jpg";
+
 
 export default function BlogPostSection() {
   const blogPosts = [
     // Original 3 posts with matching LinkedIn links
     {
       id: 1,
-      image: "/src/assets/blog/blogpost1.jpg",
+      image: blogimg1,
       category: "Visual Narrative",
       author: "Hetansa R",
       date: "Mar 5, 2025",
@@ -17,7 +26,7 @@ export default function BlogPostSection() {
     },
     {
       id: 2,
-      image: "/src/assets/blog/blogpost2.jpg",
+      image: blogimg2,
       category: "Film Analysis",
       author: "Hetansa R",
       date: "Feb 11, 2025",
@@ -27,7 +36,7 @@ export default function BlogPostSection() {
     },
     {
       id: 3,
-      image: "/src/assets/blog/blogpost3.jpg",
+      image: blogimg3,
       category: "Directorial Vision",
       author: "Hetansa R",
       date: "Jan 25, 2025",
@@ -39,7 +48,7 @@ export default function BlogPostSection() {
     // Additional LinkedIn articles (4-8)
     {
       id: 4,
-      image: "https://picsum.photos/400/300?image=10",
+      image: blogimg4,
       category: "Cinematic Theory",
       author: "Hetansa R",
       date: "May 25, 2023",
@@ -49,7 +58,7 @@ export default function BlogPostSection() {
     },
     {
       id: 5,
-      image: "https://picsum.photos/400/300?image=20",
+      image: blogimg5,
       category: "Mythological Studies",
       author: "Hetansa R",
       date: "May 25, 2023",
@@ -59,7 +68,7 @@ export default function BlogPostSection() {
     },
     {
       id: 6,
-      image: "https://picsum.photos/400/300?image=30",
+      image: blogimg6,
       category: "Narrative Design",
       author: "Hetansa R",
       date: "May 25, 2023",
@@ -69,7 +78,7 @@ export default function BlogPostSection() {
     },
     {
       id: 7,
-      image: "https://picsum.photos/400/300?image=40",
+      image: blogimg7,
       category: "Emotional Storytelling",
       author: "Hetansa R",
       date: "May 25, 2023",
@@ -79,7 +88,7 @@ export default function BlogPostSection() {
     },
     {
       id: 8,
-      image: "https://picsum.photos/400/300?image=50",
+      image: blogimg8,
       category: "Character Archetypes",
       author: "Hetansa R",
       date: "May 25, 2023",
