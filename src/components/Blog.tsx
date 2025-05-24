@@ -8,7 +8,7 @@ import blogimg4 from "../assets/blog/blogpost4.jpg";
 import blogimg5 from "../assets/blog/blogpost5.jpg";
 import blogimg6 from "../assets/blog/blogpost6.jpg";
 import blogimg7 from "../assets/blog/blogpost7.jpg";
-import blogimg8 from "../assets/blog/blogpost8.jpg";
+import blogimg from "../assets/blog/blogpost8.jpg";
 
 
 export default function BlogPostSection() {
@@ -88,7 +88,7 @@ export default function BlogPostSection() {
     },
     {
       id: 8,
-      image: blogimg8,
+      image: blogimg,
       category: "Character Archetypes",
       author: "Hetansa R",
       date: "May 25, 2023",
