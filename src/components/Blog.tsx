@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAllPosts } from "./Api"; // Adjust path if necessary
-const commonMask = "/src/assets/masks/mask2.svg"
+
 
 type BlogPost = {
   id: string | number;
@@ -19,6 +19,7 @@ export default function BlogPostSection() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
+  const commonMask = "/src/assets/masks/mask2.svg"
 
   useEffect(() => {
     setLoading(true);
