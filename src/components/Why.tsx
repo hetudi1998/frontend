@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import profile from '../assets/Profile.svg';
 import Resume from '../assets/Hetansa_Resume.pdf';
 
@@ -6,8 +6,8 @@ export default function WhyHireMeSection() {
   const [projectsCount, setProjectsCount] = useState(0);
   const [satisfaction, setSatisfaction] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const sectionRef = useRef(null);
-  const intervalRef = useRef(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -30,14 +30,14 @@ export default function WhyHireMeSection() {
   }, [hasAnimated]);
 
   const startCounter = () => {
-    intervalRef.current = setInterval(() => {
+    intervalRef.current = window.setInterval(() => {
       setProjectsCount((prev) => (prev < 120 ? prev + 2 : 120));
       setSatisfaction((prev) => (prev < 100 ? prev + 2 : 100));
     }, 20);
   };
 
   useEffect(() => {
-    if (projectsCount >= 120 && satisfaction >= 100) {
+    if (projectsCount >= 120 && satisfaction >= 100 && intervalRef.current !== null) {
       clearInterval(intervalRef.current);
     }
   }, [projectsCount, satisfaction]);
