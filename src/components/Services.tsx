@@ -1,5 +1,8 @@
 import { useState } from "react";
 import servicebg from "../assets/service/servicebg.jpg";
+import serviceimg1 from "../assets/service/serviceimg1.jpg";
+import serviceimg2 from "../assets/service/serviceimg2.jpg";
+import serviceimg3 from "../assets/service/serviceimg3.jpg";
 import ServiceCard from "./Card";
 
 export default function ServicesSection() {
@@ -9,17 +12,17 @@ export default function ServicesSection() {
     {
       id: "filmmaking",
       title: "Filmmaking",
-      image: "/src/assets/service/serviceimg1.jpg",
+      image: serviceimg1,
     },
     {
       id: "visual-effects",
       title: "Visual Effects",
-      image: "/src/assets/service/serviceimg2.jpg",
+      image: serviceimg2,
     },
     {
       id: "graphic-designing",
       title: "Graphic Designing",
-      image: "/src/assets/service/serviceimg3.jpg",
+      image: serviceimg3,
     },
   ];
 
@@ -47,7 +50,7 @@ export default function ServicesSection() {
             </h2>
           </div>
 
-          <div className="">
+          <div>
             <p className="text-white text-2xl">
               Bringing ideas to life with storytelling, visuals, and design.
             </p>
