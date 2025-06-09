@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getAllPosts } from "./Api"; // Adjust path if necessary
+
 import commonMask from '../assets/masks/mask2.svg';
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../firebase";
