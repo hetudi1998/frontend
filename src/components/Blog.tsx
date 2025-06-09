@@ -3,6 +3,8 @@ import { ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAllPosts } from "./Api"; // Adjust path if necessary
 import commonMask from '../assets/masks/mask2.svg';
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "../firebase";
 
 
 
@@ -23,17 +25,41 @@ export default function BlogPostSection() {
   const [showAll, setShowAll] = useState(false);
   
 
-  useEffect(() => {
-    setLoading(true);
-    getAllPosts()
-      .then((res) => {
-        setBlogPosts(res.data);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   getAllPosts()
+  //     .then((res) => {
+  //       console.log("Fetched blog posts:", res.data);
+  //       setBlogPosts(res.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Failed to fetch blog posts:", err);
+  //       setLoading(false);
+  //     });
+  // }, []);
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const querySnapshot = await getDocs(collection(db, "posts"));
+        const posts: { id: string; }[] = [];
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", { ...doc.data(), id: doc.id });
+          posts.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        });
+        console.log("Fetched posts from Firestore:", posts);
+        setBlogPosts(posts as BlogPost[]);
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch blog posts:", err);
-        setLoading(false);
-      });
+      } catch (error) {
+        console.error("Error getting documents: ", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const visiblePosts = showAll ? blogPosts : blogPosts.slice(0, 3);
