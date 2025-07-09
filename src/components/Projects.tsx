@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Play, ExternalLink, Award, Star } from "lucide-react";
 import project1 from "../assets/project/project1.png";
