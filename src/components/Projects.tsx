@@ -42,8 +42,6 @@ const projects = [
 ];
 
 export default function ProjectsSection() {
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-
   return (
     <section className="bg-black min-h-screen py-20 relative overflow-hidden">
       {/* Cinematic Background Effects */}
@@ -105,8 +103,6 @@ export default function ProjectsSection() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
-              onMouseEnter={() => setHoveredProject(project.id)}
-              onMouseLeave={() => setHoveredProject(null)}
             >
               {/* Project Card */}
               <motion.div 
