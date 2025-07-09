@@ -1,10 +1,6 @@
 import { motion } from "framer-motion";
 import { Linkedin, Instagram, Youtube, Mail, ArrowUp } from "lucide-react";
 import HRLogo from "../assets/footer/RLogoDark.svg";
-import linkedinIcon from "../assets/footer/linkedinwhite.svg";
-import instagramIcon from "../assets/footer/instagram.svg";
-import youtubeIcon from "../assets/footer/youtubewhite.svg";
-import whatsappIcon from "../assets/footer/whatsapp.svg";
 
 const socialLinks = [
   {

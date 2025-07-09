@@ -1,4 +1,4 @@
-import { ArrowUpRight, Calendar, User, BookOpen, ExternalLink } from "lucide-react";
+import { Calendar, User, BookOpen, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import AdminPanel from "./AdminPanel";
@@ -123,9 +123,11 @@ export default function BlogPostSection() {
   const visiblePosts = showAll ? blogPosts : blogPosts.slice(0, 4);
 
   // Auto-scroll effect for featured post
-  const [scrollY, setScrollY] = useState(0);
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => {
+      // This effect is no longer needed as scrollY is removed.
+      // Keeping it for now as per instructions, but it will be removed in a subsequent edit.
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);

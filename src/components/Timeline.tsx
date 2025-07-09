@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Star, Award, Zap, Calendar, MapPin, ExternalLink } from 'lucide-react';
+import { Star, Award, Zap, Calendar, MapPin } from 'lucide-react';
 import threeDTool1 from '../assets/exp/3d1.svg';
 import threeDTool2 from '../assets/exp/3d2.svg';
 import threeDTool3 from '../assets/exp/3d3.svg';

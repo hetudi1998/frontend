@@ -10,7 +10,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const [isClapping, setIsClapping] = useState(false);
   const [showAction, setShowAction] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [clapCount, setClapCount] = useState(0);
 
   useEffect(() => {
     // Animation sequence
@@ -50,13 +49,13 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   useEffect(() => {
     if (isClapping) {
       const clapInterval = setInterval(() => {
-        setClapCount(prev => {
-          if (prev >= 2) {
-            clearInterval(clapInterval);
-            return prev;
-          }
-          return prev + 1;
-        });
+        // setClapCount(prev => { // This line is removed
+        //   if (prev >= 2) {
+        //     clearInterval(clapInterval);
+        //     return prev;
+        //   }
+        //   return prev + 1;
+        // });
       }, 300);
       
       return () => clearInterval(clapInterval);

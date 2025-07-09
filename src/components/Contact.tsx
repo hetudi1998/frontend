@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, Linkedin, Instagram, Youtube } from "lucide-react";
-import whatsappIcon from "../assets/whatsapp.svg";
-import linkedinIcon from "../assets/linkedin.svg";
-import instagramIcon from "../assets/instagram.svg";
-import youtubeIcon from "../assets/youtube.svg";
 
 const contactInfo = [
   {
