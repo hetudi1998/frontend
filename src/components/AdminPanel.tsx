@@ -9,11 +9,7 @@ import {
   Eye, 
   EyeOff, 
   Upload,
-  BookOpen,
-  Calendar,
-  User,
-  Link,
-  Image as ImageIcon
+  BookOpen
 } from "lucide-react";
 
 interface BlogPost {
