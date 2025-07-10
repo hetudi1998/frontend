@@ -81,34 +81,25 @@ export default function HeroSection() {
             onClose={() => setIsMenuOpen(false)}
             onToggle={toggleMenu}
           />
-          <button 
-            className="flex items-center justify-center h-10 w-10 rounded-full bg-white/70 shadow border border-white/60"
-            onClick={toggleMenu}
-          >
-            <span className="text-2xl text-primary">{isMenuOpen ? "✕" : "☰"}</span>
-          </button>
         </div>
       </header>
 
-      {/* Main Content with Purple Background */}
-      <div className="flex-1 flex flex-col bg-white relative pt-20 sm:pt-24 md:pt-20">
-        {/* Profile Image - Mobile */}
-        <div 
-          className={`md:hidden absolute left-1/2 transform -translate-x-1/2 -top-10 sm:-top-24 w-48 sm:w-56 transition-opacity duration-300 ${isMenuOpen ? 'opacity-0 z-0' : 'opacity-100 z-50'}`}
-        >
-          <img 
-            src={profilePic}
-            alt="Hetansa Rajkotia" 
-            width={224}
-            height={224}
-            className="w-full h-full object-contain"
-            loading="eager"
-          />
-        </div>
+      {/* Profile Image - Mobile (below navbar, larger size) */}
+      <div className="md:hidden flex justify-center mt-28">
+        <img 
+          src={profilePic}
+          alt="Hetansa Rajkotia"
+          width={256}
+          height={256}
+          className="w-64 h-64 object-contain rounded-2xl shadow-xl border-4 border-white"
+          loading="eager"
+        />
+      </div>
 
-        <div className="bg-[linear-gradient(145deg,#673AB7_10%,#252124_50%)] relative overflow-hidden rounded-b-[1.5rem] sm:rounded-b-[2rem] md:rounded-b-[3rem]">
+      {/* Main Content with Purple Background */}
+      <div className="flex-1 flex flex-col relative pt-8 sm:pt-12 md:pt-20">
           <div 
-            className="absolute inset-0 z-0 opacity-30 bg-cover bg-center" 
+            className="absolute inset-0 z-0 bg-cover bg-center" 
             style={{ backgroundImage: `url(${backgroundPic})` }}
             aria-hidden="true"
           />
@@ -132,7 +123,7 @@ export default function HeroSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={name}
-                    className="text-white hover:text-primary transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full p-1"
+                    className="text-white hover:text-primary transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full p-1 bg-black/40"
                   >
                     <img src={icon} alt="" className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" aria-hidden="true" />
                   </a>
@@ -140,7 +131,6 @@ export default function HeroSection() {
               </div>
             </div>
           </div>
-        </div>
 
         {/* Awards Section */}
         <div className="flex flex-col md:flex-row justify-center md:justify-start items-center gap-8 sm:gap-12 py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8 bg-white" role="list" aria-label="Awards and Recognition">
@@ -163,21 +153,6 @@ export default function HeroSection() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Profile Image - Desktop */}
-      <div 
-        className="hidden md:block absolute right-4 lg:right-12 xl:right-24 2xl:right-36 bottom-20 sm:bottom-24 lg:bottom-32 w-56 sm:w-64 md:w-72 lg:w-76 h-auto z-50 transition-all duration-300"
-      >
-        <img 
-          src={profilePic}
-          alt=""
-          width={304}
-          height={304}
-          className="w-full h-full object-contain"
-          aria-hidden="true"
-        />
-        <div className="hidden lg:block absolute left-1/2 bottom-0 w-[2px] h-24 md:h-32 lg:h-36 bg-black transform translate-y-full" aria-hidden="true"></div>
       </div>
     </section>
   );
