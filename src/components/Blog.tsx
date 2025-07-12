@@ -1,10 +1,12 @@
 import { Calendar, User, BookOpen, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase"; // 🔁 adjust path if needed
 import AdminPanel from "./AdminPanel";
 
 interface BlogPost {
-  id: number;
+  id: string;
   image: string;
   category: string;
   author: string;
@@ -17,150 +19,48 @@ interface BlogPost {
 }
 
 export default function BlogPostSection() {
-  // Default blog posts
-  const defaultBlogPosts: BlogPost[] = [
-    {
-      id: 1,
-      image: "/src/assets/blog/blogpost1.jpg",
-      category: "Visual Narrative",
-      author: "Hetansa R",
-      date: "2025-03-05",
-      title: "The Hero's Journey in Hindu Mythology: Beyond the Western Arc",
-      excerpt: "Exploring the timeless narratives of Hindu mythology and their profound impact on modern storytelling...",
-      readTime: "8 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/heros-journey-hindu-mythology-beyond-western-arc-hetansa-rajkotia-u3dsf"
-    },
-    {
-      id: 2,
-      image: "/src/assets/blog/blogpost2.jpg",
-      category: "Film Analysis",
-      author: "Hetansa R",
-      date: "2025-02-11",
-      title: "The Self-Discovery Journey in Tamasha",
-      excerpt: "A deep dive into the cinematic masterpiece that explores identity, dreams, and the courage to be authentic...",
-      readTime: "6 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/self-discovery-journey-tamasha-hetansa-rajkotia-topsf"
-    },
-    {
-      id: 3,
-      image: "/src/assets/blog/blogpost3.jpg",
-      category: "Directorial Vision",
-      author: "Hetansa R",
-      date: "2025-01-25",
-      title: "Life Through a Cinematic Lens",
-      excerpt: "How everyday moments transform into extraordinary stories when viewed through the lens of cinema...",
-      readTime: "7 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/life-through-cinematic-lens-hetansa-rajkotia-yyfgc"
-    },
-    {
-      id: 4,
-      image: "https://picsum.photos/400/300?image=10",
-      category: "Cinematic Theory",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Lights, Colour, Action: How Theory of Filmmaking Aesthetics",
-      excerpt: "Understanding the fundamental principles that make visual storytelling compelling and emotionally resonant...",
-      readTime: "10 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/lights-colour-action-how-theory-filmmaking-aesthetics-rajkotia-tkowf"
-    },
-    {
-      id: 5,
-      image: "https://picsum.photos/400/300?image=20",
-      category: "Mythological Studies",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "From Yugas to Screenplays: Eternal Cycles of Storytelling",
-      excerpt: "How ancient Indian concepts of time and cycles influence modern narrative structures...",
-      readTime: "9 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/from-yugas-screenplays-eternal-cycles-storytelling-hetansa-rajkotia-1b4kf"
-    },
-    {
-      id: 6,
-      image: "https://picsum.photos/400/300?image=30",
-      category: "Narrative Design",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Timeless Craft: Mythological Narratives & Structures of the Soul",
-      excerpt: "The art of crafting stories that resonate with the deepest parts of human consciousness...",
-      readTime: "12 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/timeless-craft-mythological-narratives-structures-soul-rajkotia-notzf"
-    },
-    {
-      id: 7,
-      image: "https://picsum.photos/400/300?image=40",
-      category: "Emotional Storytelling",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Emotional Tapestry of Hi Nanna: Story of Love, Loss & Connection",
-      excerpt: "Analyzing the delicate balance of emotions in contemporary Indian cinema...",
-      readTime: "8 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/emotional-tapestry-hi-nanna-story-love-loss-bridge-between-rajkotia-fadxf"
-    },
-    {
-      id: 8,
-      image: "https://picsum.photos/400/300?image=50",
-      category: "Character Archetypes",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Beyond Good & Evil: Lessons from Hindu Mythology's Villains",
-      excerpt: "Understanding the complexity of antagonists and what they teach us about human nature...",
-      readTime: "11 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/beyond-good-evil-lessons-hindu-mythologys-villains-hetansa-rajkotia-wwfff"
-    }
-  ];
-
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(defaultBlogPosts);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [showAll, setShowAll] = useState(false);
-  const [hoveredPost, setHoveredPost] = useState<number | null>(null);
+  const [hoveredPost, setHoveredPost] = useState<string | null>(null);
   const visiblePosts = showAll ? blogPosts : blogPosts.slice(0, 4);
 
-  // Auto-scroll effect for featured post
+  // Fetch from Firestore
   useEffect(() => {
-    const handleScroll = () => {
-      // This effect is no longer needed as scrollY is removed.
-      // Keeping it for now as per instructions, but it will be removed in a subsequent edit.
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
+      const posts = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          date:
+            typeof data.date === "string"
+              ? data.date
+              : data.date?.toDate().toISOString().split("T")[0],
+        };
+      }) as BlogPost[];
+      setBlogPosts(posts);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  // Load blogs from localStorage on component mount
-  useEffect(() => {
-    const savedBlogs = localStorage.getItem('blogPosts');
-    if (savedBlogs) {
-      try {
-        const parsedBlogs = JSON.parse(savedBlogs);
-        setBlogPosts(parsedBlogs);
-      } catch (error) {
-        console.error('Error loading blogs from localStorage:', error);
-        setBlogPosts(defaultBlogPosts);
-      }
-    }
-  }, []);
+ 
 
-  // Handle blog updates from admin panel
-  const handleBlogsUpdate = (updatedBlogs: BlogPost[]) => {
-    setBlogPosts(updatedBlogs);
-    // Save to localStorage
-    localStorage.setItem('blogPosts', JSON.stringify(updatedBlogs));
-  };
-
-  // Format date for display
   const formatDisplayDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
+
+  if (blogPosts.length === 0) {
+    return (
+      <div className="min-h-screen flex justify-center items-center text-lg text-gray-500">
+        Loading blog posts...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full py-16 sm:py-20 md:py-24 px-4 sm:px-6 relative overflow-hidden bg-background">
@@ -359,8 +259,7 @@ export default function BlogPostSection() {
 
       {/* Admin Panel */}
       <AdminPanel 
-        onBlogsUpdate={handleBlogsUpdate}
-        currentBlogs={blogPosts}
+  
       />
 
       {/* SVG Definitions */}

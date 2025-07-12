@@ -1,19 +1,29 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Save, 
-  X, 
-  Eye, 
-  EyeOff, 
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Save,
+  X,
+  Eye,
+  EyeOff,
   Upload,
   BookOpen
 } from "lucide-react";
+import { db } from "../firebase";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  onSnapshot,
+  doc,
+  Timestamp,
+} from "firebase/firestore";
 
 interface BlogPost {
-  id: number;
+  id: string;
   image: string;
   category: string;
   author: string;
@@ -25,24 +35,19 @@ interface BlogPost {
   linkedin: string;
 }
 
-interface AdminPanelProps {
-  onBlogsUpdate: (blogs: BlogPost[]) => void;
-  currentBlogs: BlogPost[];
-}
-
-export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelProps) {
+export default function AdminPanel() {
+  const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const ADMIN_PASSWORD = "cinema2024";
-  const [blogs, setBlogs] = useState<BlogPost[]>(currentBlogs);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [editingBlog, setEditingBlog] = useState<BlogPost | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
 
-  // Form state
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -57,7 +62,7 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
 
   const categories = [
     "Visual Narrative",
-    "Film Analysis", 
+    "Film Analysis",
     "Directorial Vision",
     "Cinematic Theory",
     "Mythological Studies",
@@ -67,8 +72,21 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
   ];
 
   useEffect(() => {
-    setBlogs(currentBlogs);
-  }, [currentBlogs]);
+    const postsRef = collection(db, "posts");
+    const unsubscribe = onSnapshot(postsRef, (snapshot) => {
+      const blogList = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          date: typeof data.date === "string" ? data.date : data.date.toDate().toISOString().split("T")[0],
+        };
+      }) as BlogPost[];
+
+      setBlogs(blogList);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -83,32 +101,28 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (isEditing && editingBlog) {
-      // Update existing blog
-      const updatedBlogs = blogs.map(blog => 
-        blog.id === editingBlog.id 
-          ? { ...formData, id: editingBlog.id }
-          : blog
-      );
-      setBlogs(updatedBlogs);
-      onBlogsUpdate(updatedBlogs);
-      setEditingBlog(null);
-      setIsEditing(false);
-    } else {
-      // Add new blog
-      const newBlog: BlogPost = {
-        ...formData,
-        id: Date.now()
-      };
-      const updatedBlogs = [newBlog, ...blogs];
-      setBlogs(updatedBlogs);
-      onBlogsUpdate(updatedBlogs);
+    setLoading(true);
+
+    const payload = {
+      ...formData,
+      date: Timestamp.fromDate(new Date(formData.date))
+    };
+
+    try {
+      if (isEditing && editingBlog) {
+        const docRef = doc(db, "posts", editingBlog.id);
+        await updateDoc(docRef, payload);
+      } else {
+        await addDoc(collection(db, "posts"), payload);
+      }
+    } catch (error) {
+      console.error("Error saving post:", error);
     }
 
-    // Reset form
+    setEditingBlog(null);
+    setIsEditing(false);
     setFormData({
       title: "",
       excerpt: "",
@@ -121,6 +135,18 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
       mask: "/src/assets/masks/mask2.svg"
     });
     setImagePreview("");
+    setLoading(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      setLoading(true);
+      await deleteDoc(doc(db, "posts", id));
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEdit = (blog: BlogPost) => {
@@ -138,12 +164,6 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
       mask: blog.mask
     });
     setImagePreview(blog.image);
-  };
-
-  const handleDelete = (id: number) => {
-    const updatedBlogs = blogs.filter(blog => blog.id !== id);
-    setBlogs(updatedBlogs);
-    onBlogsUpdate(updatedBlogs);
   };
 
   const handleCancel = () => {
@@ -164,14 +184,13 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
     });
   };
 
-  // Password modal handler
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordInput === ADMIN_PASSWORD) {
@@ -182,6 +201,9 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
       setPasswordError("Incorrect password. Try again.");
     }
   };
+
+  // ...UI code remains unchanged...
+
 
   return (
     <>
@@ -516,6 +538,12 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
             </div>
           </motion.div>
         )}
+        {loading && (
+  <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center">
+    <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+)}
+
       </AnimatePresence>
     </>
   );
