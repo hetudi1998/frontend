@@ -11,19 +11,7 @@ import {
   Upload,
   BookOpen
 } from "lucide-react";
-
-interface BlogPost {
-  id: number;
-  image: string;
-  category: string;
-  author: string;
-  date: string;
-  title: string;
-  excerpt: string;
-  readTime: string;
-  mask: string;
-  linkedin: string;
-}
+import type { BlogPost } from "../types/blog";
 
 interface AdminPanelProps {
   onBlogsUpdate: (blogs: BlogPost[]) => void;
@@ -140,7 +128,7 @@ export default function AdminPanel({ onBlogsUpdate, currentBlogs }: AdminPanelPr
     setImagePreview(blog.image);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string | number) => {
     const updatedBlogs = blogs.filter(blog => blog.id !== id);
     setBlogs(updatedBlogs);
     onBlogsUpdate(updatedBlogs);

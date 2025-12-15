@@ -2,148 +2,53 @@ import { Calendar, User, BookOpen, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import AdminPanel from "./AdminPanel";
-
-interface BlogPost {
-  id: number;
-  image: string;
-  category: string;
-  author: string;
-  date: string;
-  title: string;
-  excerpt: string;
-  readTime: string;
-  mask: string;
-  linkedin: string;
-}
+import { db } from "../firebase";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import type { BlogPost } from "../types/blog";
 
 export default function BlogPostSection() {
-  // Default blog posts
-  const defaultBlogPosts: BlogPost[] = [
-    {
-      id: 1,
-      image: "/src/assets/blog/blogpost1.jpg",
-      category: "Visual Narrative",
-      author: "Hetansa R",
-      date: "2025-03-05",
-      title: "The Hero's Journey in Hindu Mythology: Beyond the Western Arc",
-      excerpt: "Exploring the timeless narratives of Hindu mythology and their profound impact on modern storytelling...",
-      readTime: "8 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/heros-journey-hindu-mythology-beyond-western-arc-hetansa-rajkotia-u3dsf"
-    },
-    {
-      id: 2,
-      image: "/src/assets/blog/blogpost2.jpg",
-      category: "Film Analysis",
-      author: "Hetansa R",
-      date: "2025-02-11",
-      title: "The Self-Discovery Journey in Tamasha",
-      excerpt: "A deep dive into the cinematic masterpiece that explores identity, dreams, and the courage to be authentic...",
-      readTime: "6 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/self-discovery-journey-tamasha-hetansa-rajkotia-topsf"
-    },
-    {
-      id: 3,
-      image: "/src/assets/blog/blogpost3.jpg",
-      category: "Directorial Vision",
-      author: "Hetansa R",
-      date: "2025-01-25",
-      title: "Life Through a Cinematic Lens",
-      excerpt: "How everyday moments transform into extraordinary stories when viewed through the lens of cinema...",
-      readTime: "7 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/life-through-cinematic-lens-hetansa-rajkotia-yyfgc"
-    },
-    {
-      id: 4,
-      image: "https://picsum.photos/400/300?image=10",
-      category: "Cinematic Theory",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Lights, Colour, Action: How Theory of Filmmaking Aesthetics",
-      excerpt: "Understanding the fundamental principles that make visual storytelling compelling and emotionally resonant...",
-      readTime: "10 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/lights-colour-action-how-theory-filmmaking-aesthetics-rajkotia-tkowf"
-    },
-    {
-      id: 5,
-      image: "https://picsum.photos/400/300?image=20",
-      category: "Mythological Studies",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "From Yugas to Screenplays: Eternal Cycles of Storytelling",
-      excerpt: "How ancient Indian concepts of time and cycles influence modern narrative structures...",
-      readTime: "9 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/from-yugas-screenplays-eternal-cycles-storytelling-hetansa-rajkotia-1b4kf"
-    },
-    {
-      id: 6,
-      image: "https://picsum.photos/400/300?image=30",
-      category: "Narrative Design",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Timeless Craft: Mythological Narratives & Structures of the Soul",
-      excerpt: "The art of crafting stories that resonate with the deepest parts of human consciousness...",
-      readTime: "12 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/timeless-craft-mythological-narratives-structures-soul-rajkotia-notzf"
-    },
-    {
-      id: 7,
-      image: "https://picsum.photos/400/300?image=40",
-      category: "Emotional Storytelling",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Emotional Tapestry of Hi Nanna: Story of Love, Loss & Connection",
-      excerpt: "Analyzing the delicate balance of emotions in contemporary Indian cinema...",
-      readTime: "8 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/emotional-tapestry-hi-nanna-story-love-loss-bridge-between-rajkotia-fadxf"
-    },
-    {
-      id: 8,
-      image: "https://picsum.photos/400/300?image=50",
-      category: "Character Archetypes",
-      author: "Hetansa R",
-      date: "2023-05-25",
-      title: "Beyond Good & Evil: Lessons from Hindu Mythology's Villains",
-      excerpt: "Understanding the complexity of antagonists and what they teach us about human nature...",
-      readTime: "11 min read",
-      mask: "/src/assets/masks/mask2.svg",
-      linkedin: "https://www.linkedin.com/pulse/beyond-good-evil-lessons-hindu-mythologys-villains-hetansa-rajkotia-wwfff"
-    }
-  ];
-
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(defaultBlogPosts);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
-  const [hoveredPost, setHoveredPost] = useState<number | null>(null);
+  const [hoveredPost, setHoveredPost] = useState<string | number | null>(null);
   const visiblePosts = showAll ? blogPosts : blogPosts.slice(0, 4);
 
-  // Auto-scroll effect for featured post
+  // Fetch blogs from Firestore
   useEffect(() => {
-    const handleScroll = () => {
-      // This effect is no longer needed as scrollY is removed.
-      // Keeping it for now as per instructions, but it will be removed in a subsequent edit.
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Load blogs from localStorage on component mount
-  useEffect(() => {
-    const savedBlogs = localStorage.getItem('blogPosts');
-    if (savedBlogs) {
+    const fetchBlogs = async () => {
       try {
-        const parsedBlogs = JSON.parse(savedBlogs);
-        setBlogPosts(parsedBlogs);
+        setLoading(true);
+        const postsRef = collection(db, "posts");
+        const q = query(postsRef, orderBy("date", "desc"));
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot);
+        
+        const fetchedPosts: BlogPost[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          fetchedPosts.push({
+            id: doc.id,
+            image: data.image || "",
+            category: data.category || "",
+            author: data.author || "",
+            date: data.date || "",
+            title: data.title || "",
+            excerpt: data.excerpt || "",
+            readTime: data.readTime || "",
+            mask: data.mask || "/src/assets/masks/mask2.svg",
+            linkedin: data.linkedin || ""
+          });
+        });
+        
+        setBlogPosts(fetchedPosts);
       } catch (error) {
-        console.error('Error loading blogs from localStorage:', error);
-        setBlogPosts(defaultBlogPosts);
+        console.error('Error fetching blogs from Firestore:', error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchBlogs();
   }, []);
 
   // Handle blog updates from admin panel
@@ -161,6 +66,17 @@ export default function BlogPostSection() {
       day: 'numeric'
     });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full py-16 sm:py-20 md:py-24 px-4 sm:px-6 relative overflow-hidden bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p className="mt-4 text-text-light">Loading blogs...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full py-16 sm:py-20 md:py-24 px-4 sm:px-6 relative overflow-hidden bg-background">
