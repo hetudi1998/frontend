@@ -6,21 +6,21 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email",
-    value: "hetansa.rajkotia@gmail.com",
-    link: "mailto:hetansa.rajkotia@gmail.com",
+    value: "hetu.vfx@gmail.com",
+    link: "mailto:hetu.vfx@gmail.com",
     color: "text-blue-400"
   },
   {
     icon: Phone,
     title: "Phone",
-    value: "+91 98250 12345",
-    link: "tel:+919825012345",
+    value: "+91 88064 56123",
+    link: "tel:+918806456123",
     color: "text-green-400"
   },
   {
     icon: MapPin,
     title: "Location",
-    value: "Mumbai, India",
+    value: "Pune, India",
     link: "#",
     color: "text-red-400"
   }
